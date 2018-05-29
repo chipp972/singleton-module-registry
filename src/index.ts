@@ -52,7 +52,6 @@ export class ModuleRegistry extends EventEmitter {
       throw new Error(`A module with id "${namespace}" is already registered`);
     }
     this.addRequiredModules(module.required);
-    module.id = namespace;
     this.modules[namespace] = module;
     this.registerEvents(namespace, module.event);
     return this;
@@ -122,3 +121,5 @@ export const getRegistrySingleton = () => {
   if (!registry) registry = new ModuleRegistry();
   return registry;
 };
+
+export const setRegistrySingleton = (reg: ModuleRegistry) => (registry = reg);
