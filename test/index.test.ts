@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import EventEmitter from 'eventemitter3';
 import { spy } from 'sinon';
 import {
+  clearGlobals,
   getRegistrySingleton,
   ModuleRegistry,
   setRegistrySingleton,
@@ -12,6 +13,7 @@ describe('Module Registry', function() {
 
   afterEach(function() {
     registry.clean();
+    clearGlobals();
   });
 
   describe('Registering modules', function() {
