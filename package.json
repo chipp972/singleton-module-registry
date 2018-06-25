@@ -1,6 +1,6 @@
 {
   "name": "singleton-module-registry",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Implementation of the Registry Pattern to have loosely-coupled modules",
   "engineStrict": true,
   "engines": {
@@ -19,7 +19,8 @@
     "test": "mocha test/**/*.test.ts --exit",
     "test-only": "mocha test/**/*.test.ts --exit",
     "test:watch": "mocha --watch --reporter min",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "release": "standard-version"
   },
   "husky": {
     "hooks": {
