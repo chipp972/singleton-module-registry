@@ -63,3 +63,4 @@ lib/
 build/
 
 .sonarlint
+.vscode
