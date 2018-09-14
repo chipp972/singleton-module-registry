@@ -6,8 +6,8 @@
   "engines": {
     "node": ">=8.9"
   },
-  "main": "./lib/src/index",
-  "typings": "./lib/src/index",
+  "main": "./lib/index",
+  "typings": "./lib/index",
   "scripts": {
     "clean": "rm -rf lib",
     "format": "prettier --write '{src,test}/**/*.ts'",
@@ -16,9 +16,8 @@
     "build": "tsc --project tsconfig.json --pretty",
     "build:watch": "tsc --watch --project tsconfig.json --pretty",
     "pretest": "npm run format && npm run lint && npm run build",
-    "test": "mocha test/**/*.test.ts --exit",
-    "test-only": "mocha test/**/*.test.ts --exit",
-    "test:watch": "mocha --watch --reporter min",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "prepare": "npm run build",
     "release": "standard-version"
   },
@@ -32,18 +31,14 @@
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
     "@types/eventemitter3": "^2.0.2",
-    "@types/mocha": "^5.2.3",
+    "@types/jest": "^23.3.2",
     "@types/node": "^10.9.4",
-    "@types/sinon": "^5.0.1",
-    "chai": "^4.1.2",
-    "husky": "^0.14.3",
-    "mocha": "^5.2.0",
+    "husky": "^1.0.0-rc.14",
+    "jest": "^23.6.0",
     "prettier": "^1.14.2",
-    "sinon": "^6.0.1",
     "standard-version": "^4.4.0",
-    "ts-node": "^7.0.0",
+    "ts-jest": "^23.1.4",
     "tslint": "^5.11.0",
     "typescript": "^3.0.3"
   },
