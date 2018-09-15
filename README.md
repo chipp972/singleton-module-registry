@@ -1,5 +1,7 @@
 # Singleton Module Registry
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cc62b375380b4076973bb9e5098c9827)](https://app.codacy.com/app/pierrecharles.nicolas/singleton-module-registry?utm_source=github.com&utm_medium=referral&utm_content=chipp972/singleton-module-registry&utm_campaign=Badge_Grade_Dashboard)
+
 ## Description
 
 Implementation of the Registry Pattern to have loosely-coupled modules in your app.
