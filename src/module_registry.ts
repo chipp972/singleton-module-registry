@@ -1,86 +1,54 @@
-import EventEmitter from 'eventemitter3';
+export class ModuleRegistry<T = { [id: string]: any }> {
+  private modules: Partial<T>;
 
-export interface EventObject {
-  eventNames: string[];
-  emitter: EventEmitter;
-}
-
-export interface Module {
-  id?: string;
-  required?: string[];
-  event?: EventObject;
-  [operation: string]: any;
-}
-
-export class ModuleRegistry extends EventEmitter {
-  private modules: { [id: string]: Module };
-  private required: { [id: string]: number };
-
-  constructor() {
-    super();
+  public constructor() {
     this.modules = {};
-    this.required = {};
   }
 
   public clean(): ModuleRegistry {
-    this.removeAllListeners();
     this.modules = {};
-    this.required = {};
     return this;
   }
 
-  public registerEvents(id: string, event?: EventObject): ModuleRegistry {
-    if (!event) return this;
-    const { emitter, eventNames } = event;
-    eventNames.forEach((eventName: string) => {
-      emitter.on(eventName, (...args) => {
-        this.emit(`${id}:${eventName}`, ...args);
-      });
-    });
-    return this;
-  }
-
-  public getRequiredModules(): string[] {
-    return Object.keys(this.required);
-  }
-
-  public registerModule(module: Module, id?: string): ModuleRegistry {
-    const namespace = id || module.id;
-    if (!namespace) {
-      throw new Error(`No id provided`);
-    } else if (this.modules[namespace]) {
-      throw new Error(`A module with id "${namespace}" is already registered`);
+  public registerModule<K extends keyof T>(
+    id: K,
+    module: T[K],
+  ): ModuleRegistry<T> {
+    if (!id) {
+      throw new Error('No id provided');
     }
-    this.addRequiredModules(module.required);
-    this.modules[namespace] = module;
-    this.registerEvents(namespace, module.event);
+    if (this.modules[id]) {
+      throw new Error(`A module with id "${id}" is already registered`);
+    }
+    this.modules[id] = module;
     return this;
   }
 
-  public unregisterModule(id: string): ModuleRegistry {
-    if (!this.modules[id]) throw new Error(`No module with id "${id}" found`);
-    const requiredNb: number | void = this.required[id];
-    if (requiredNb) {
-      throw new Error(
-        `The module with id "${id}" is required by ${requiredNb} other modules`,
-      );
+  public unregisterModule<K extends keyof T>(id: K): ModuleRegistry {
+    if (!this.modules[id]) {
+      throw this.createNotFoundError(id);
     }
-    this.removeRequiredModules(this.modules[id].required);
     delete this.modules[id];
     return this;
   }
 
-  public getModule(id: string): Module {
+  public getModule<K extends keyof T>(id: K): T[K] | undefined {
     const module = this.modules[id];
-    if (!module) throw new Error(`No module with id "${id}" found`);
+    if (!module) {
+      throw this.createNotFoundError(id);
+    }
     return module;
   }
 
-  public getModules(ids?: string[]): { [id: string]: Module } {
-    const res: { [id: string]: Module } = {};
-    if (!ids) return res;
-    ids.forEach((id: string) => {
-      if (!this.modules[id]) throw new Error(`No module with id "${id}" found`);
+  public getModules<K extends keyof T>(ids?: K[]): Partial<T> {
+    const res: Partial<T> = {};
+    if (!ids) {
+      return this.modules;
+    }
+    ids.forEach((id) => {
+      if (!this.modules[id]) {
+        throw this.createNotFoundError(id);
+      }
       res[id] = this.modules[id];
     });
     return res;
@@ -90,28 +58,7 @@ export class ModuleRegistry extends EventEmitter {
     return Object.keys(this.modules);
   }
 
-  public getModuleList(): Module[] {
-    return Object.keys(this.modules).map((id: string) => this.modules[id]);
-  }
-
-  private removeRequiredModules(ids?: string[]): ModuleRegistry {
-    if (!ids) return this;
-    ids.forEach((id: string) => {
-      this.required[id]--;
-      if (this.required[id] === 0) delete this.required[id];
-    });
-    return this;
-  }
-
-  private addRequiredModule(id: string): ModuleRegistry {
-    if (this.required[id]) this.required[id]++;
-    else this.required[id] = 1;
-    return this;
-  }
-
-  private addRequiredModules(ids?: string[]): ModuleRegistry {
-    if (!ids) return this;
-    ids.forEach((id: string) => this.addRequiredModule(id));
-    return this;
+  private createNotFoundError(id: string | number | symbol): Error {
+    return new Error(`No module with id "${id.toString()}" found`);
   }
 }

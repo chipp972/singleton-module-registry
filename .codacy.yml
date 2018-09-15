@@ -1,2 +1,8 @@
+coverage:
+  enabled: true
+  exclude_paths:
+    - 'src/**.spec.ts'
 exclude_paths:
   - '**.config.js'
+  - '.prettierrc.js'
+  - '**.json'
