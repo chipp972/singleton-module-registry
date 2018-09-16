@@ -1,6 +1,6 @@
 {
   "name": "singleton-module-registry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Implementation of the Registry Pattern to have loosely-coupled modules",
   "engineStrict": true,
   "engines": {
