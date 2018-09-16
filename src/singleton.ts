@@ -48,8 +48,10 @@ export function clearGlobals(): void {
  */
 export function injectRegistry<ModulesT, InputT, OutputT>(
   mapRegistryToProps?: (modules: Partial<ModulesT>) => InputT,
-): (fn: (ins: InputT) => OutputT) => () => OutputT {
-  const modules = getRegistrySingleton<ModulesT>().getModules();
-  const params = mapRegistryToProps ? mapRegistryToProps(modules) : modules;
-  return (fn) => fn.bind(null, params);
+): (fn: (ins: InputT | Partial<ModulesT>) => OutputT) => () => OutputT {
+  return (fn) => () => {
+    const modules = getRegistrySingleton<ModulesT>().getModules();
+    const params = mapRegistryToProps ? mapRegistryToProps(modules) : modules;
+    return fn(params);
+  };
 }
