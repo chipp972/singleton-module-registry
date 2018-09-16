@@ -94,11 +94,6 @@ describe('injectRegistry', () => {
     expect(test).toBeInstanceOf(Function);
   });
 
-  it('should throw an error if we execute the resulting function without argument', () => {
-    const test = injectRegistry();
-    expect(test).toThrowError(`Cannot read property 'bind' of undefined`);
-  });
-
   it('should binds the function given as 2nd argument with the whole registry if no mapper is provided', () => {
     const spy = jest.fn();
     const test = injectRegistry()(spy);
@@ -128,5 +123,23 @@ describe('injectRegistry', () => {
       test4: 'b',
       test5: 'ab',
     });
+  });
+
+  it('should not execute the mapping function before being executed', () => {
+    const spyMapper = jest.fn(() => 'test');
+    const spyInjected = jest.fn();
+    interface T1 {
+      test1: () => void;
+    }
+
+    const test = injectRegistry<T, T1, void>(spyMapper)(spyInjected);
+    expect(spyMapper).not.toHaveBeenCalled();
+    expect(spyInjected).not.toHaveBeenCalled();
+    test();
+    expect(spyMapper).toHaveBeenCalledWith({
+      test1: { a: 'a' },
+      test2: { b: 'b' },
+    });
+    expect(spyInjected).toHaveBeenCalledWith('test');
   });
 });
